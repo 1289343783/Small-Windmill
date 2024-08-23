@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gallery.mapper.GalleryImagesMapper">
+
+    <resultMap id="BaseResultMap" type="com.gallery.domain.entity.GalleryImages">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="userid" column="userId" jdbcType="BIGINT"/>
+        <result property="imgType" column="img_type" jdbcType="INTEGER"/>
+        <result property="imgSize" column="img_size" jdbcType="INTEGER"/>
+        <result property="imgWidth" column="img_width" jdbcType="INTEGER"/>
+        <result property="imgHeight" column="img_height" jdbcType="INTEGER"/>
+        <result property="imgFormat" column="img_format" jdbcType="VARCHAR"/>
+        <result property="imgHash" column="img_hash" jdbcType="VARCHAR"/>
+        <result property="imgName" column="img_name" jdbcType="VARCHAR"/>
+        <result property="imgUrl" column="img_url" jdbcType="VARCHAR"/>
+        <result property="imgDesc" column="img_desc" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,userId,img_type,
+        img_size,img_width,img_height,
+        img_format,img_hash,img_name,
+        img_url,img_desc,create_time,
+        update_time,create_by,update_by,
+        is_delete
+    </sql>
+</mapper>
