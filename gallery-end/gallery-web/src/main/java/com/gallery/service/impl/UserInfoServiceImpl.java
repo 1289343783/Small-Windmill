@@ -145,18 +145,28 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo>
     @Override
     public UserInfo getUserInfo(Long id) {
         UserInfo userInfo = getById(id);
-        if (userInfo == null) {
-            throw new SystemException(AppHttpCodeEnum.RESOURCE_NOT_EXIST);
-        }
+        Assert.notNull(userInfo, AppHttpCodeEnum.RESOURCE_NOT_EXIST);
+        return userInfo;
+    }
+
+    /**
+     * 根据imgKey获取用户信息
+     * @param key 用户上传key
+     * @return UserInfo
+     */
+    @Override
+    public UserInfo getUserInfoByUploadKey(String key) {
+        LambdaQueryWrapper<UserInfo> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(UserInfo::getImgKey, key);
+        UserInfo userInfo = getOne(wrapper);
+        Assert.notNull(userInfo, AppHttpCodeEnum.RESOURCE_NOT_EXIST);
         return userInfo;
     }
 
     public UserInfo getUserByAdmin(Long id) {
         Long userId = StpUtils.isAdmin() ? id : StpUtils.getUserId();
         UserInfo user = getById(userId);
-        if (user == null) {
-            throw new SystemException(AppHttpCodeEnum.RESOURCE_NOT_EXIST);
-        }
+        Assert.notNull(user, AppHttpCodeEnum.RESOURCE_NOT_EXIST);
         return user;
     }
 

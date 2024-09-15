@@ -67,8 +67,12 @@ public class GalleryImagesServiceImpl extends ServiceImpl<GalleryImagesMapper, G
         if (galleryDto.getFile() == null) {
             throw new SystemException(AppHttpCodeEnum.FILE_DO_NULL);
         }
+        if (galleryDto.getImgKey() == null || galleryDto.getImgKey().isEmpty()) {
+            throw new SystemException(AppHttpCodeEnum.PARAM_NOT_VALID);
+        }
+        UserInfo userInfo = userInfoService.getUserInfoByUploadKey(galleryDto.getImgKey());
         // 验证上传凭证
-        if (!verifyUploadKey(galleryDto.getImgKey())) {
+        if (!verifyUploadKey(galleryDto.getImgKey(), userInfo.getImgKey())) {
             throw new SystemException(AppHttpCodeEnum.USER_KEY_ILLEGALITY);
         }
         GalleryImages galleryInfo = galleryDto.getGalleryInfo();
@@ -78,7 +82,7 @@ public class GalleryImagesServiceImpl extends ServiceImpl<GalleryImagesMapper, G
             // 处理上传文件的逻辑
             MinIOUtils.uploadFile(minIOConfig.getBucketName(), fileName, file.getInputStream());
             String url = minIOConfig.getFileHost() + "/" + minIOConfig.getBucketName() + "/" + fileName;
-            galleryInfo.setUserid(StpUtils.getUserId());
+            galleryInfo.setUserid(userInfo.getId());
             galleryInfo.setImgUrl(url);
             save(galleryInfo);
             //返回图片链接
@@ -206,18 +210,13 @@ public class GalleryImagesServiceImpl extends ServiceImpl<GalleryImagesMapper, G
     /**
      * 验证上传图片的key
      *
-     * @param Key
-     * @return
+     * @return boolean
      */
-    public boolean verifyUploadKey(String Key) {
-        if (Key == null || Key.isEmpty()) {
-            throw new SystemException(AppHttpCodeEnum.PARAM_NOT_VALID);
-        }
-        UserInfo userInfo = userInfoService.getUserInfo(StpUtils.getUserId());
-        if (StpUtils.isAdmin()) {
+    public boolean verifyUploadKey(String Key, String userKey) {
+        if (SystemConstants.ADMIN_USER.equals(1L)) {
             return true;
         }
-        return Key.equals(userInfo.getImgKey());
+        return Key.equals(userKey);
     }
 
 

@@ -32,7 +32,8 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .addExclude(
                         "/",
                         "/user/login",
-                        "/user/register"
+                        "/user/register",
+                        "/file/upload"
                 )
                 // 认证函数: 每次请求执行
                 .setAuth(obj -> {

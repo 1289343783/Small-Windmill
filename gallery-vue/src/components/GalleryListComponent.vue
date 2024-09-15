@@ -27,9 +27,11 @@
                     </div>
                   </template>
                   <template #description>
-                    <div>
-                      <a-button class="w-full" type="link" @click="getGalleryInfo(item.id)">
+                    <div class="text-center truncate mt-2">
+                      <a-button type="link" @click="getGalleryInfo(item.id)">
                         查看信息
+                      </a-button>
+                      <a-button v-if="isDownloadBut" danger @click="downloadFile(item.imgName,item.imgUrl)">下载
                       </a-button>
                     </div>
                   </template>
@@ -88,6 +90,13 @@
           <a-form-item label="图片描述" name="imgDesc">
             <a-textarea v-model:value="formState.imgDesc" placeholder="请输入图片描述"/>
           </a-form-item>
+          <a-button v-if="!isDownloadBut" :loading="downloadLoading" class="w-full" danger
+                    @click="downloadFile(formState.imgName,formState.imgUrl)">
+            <template #icon>
+              <DownloadOutlined/>
+            </template>
+            下载
+          </a-button>
         </a-form>
       </a-modal>
     </div>
@@ -96,12 +105,14 @@
 <script lang="ts" setup>
 import {Icon} from "@iconify/vue";
 import {message} from "ant-design-vue";
-import type {UnwrapRef} from 'vue';
-import {onMounted, reactive, ref, toRaw} from 'vue';
+import {DownloadOutlined} from '@ant-design/icons-vue';
+import {UnwrapRef, watch} from 'vue';
+import {onMounted, reactive, ref} from 'vue';
 import type {Rule} from 'ant-design-vue/es/form';
 import {getGalleryPageListApi} from "@/api/gallert";
 import {isLogin} from "@/utils/auth";
 import {getGalleryDetailApi, updateGalleryApi, deleteGalleryApi} from "@/api/gallert";
+import {useWindowSize} from "@vueuse/core";
 
 const props = defineProps({
   spanValue: {
@@ -114,6 +125,8 @@ const props = defineProps({
     type: String,
   }
 })
+const {width: windowWidth} = useWindowSize()
+const isDownloadBut = ref<boolean>(false)
 const pageTotal = ref<number>(0);
 const galleryList = ref<IGallery[]>([])
 const current = ref(1);
@@ -232,9 +245,35 @@ const handleOk = () => {
   });
 };
 
+const setWindowStyle = (winValue: number) => {
+  winValue < 768 ? isDownloadBut.value = false : isDownloadBut.value = true
+}
+
+watch(windowWidth, newVal => {
+  if (newVal) {
+    setWindowStyle(newVal)
+  }
+})
+
+/**
+ * 下载文件
+ */
+const downloadLoading = ref<boolean>(false)
+const downloadFile = (fileName: string, fileUrl: string) => {
+  downloadLoading.value = true
+  const link = document.createElement('a')
+  link.href = fileUrl
+  link.download = fileName
+  link.click()
+  downloadLoading.value = false
+}
+
 onMounted(() => {
   if (isLogin()) {
     getGalleryList(1, 12)
+  }
+  if (windowWidth.value) {
+    setWindowStyle(windowWidth.value)
   }
 })
 

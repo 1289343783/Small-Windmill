@@ -68,9 +68,9 @@ mybatis-plus:
 # MinIO 配置
 minio:
   #ip地址
-  endpoint: http://172.20.10.4:9000
+  endpoint: http://127.0.0.1:9000
   #ip地址
-  fileHost: http:///172.20.10.4:9000
+  fileHost: http://127.0.0.1:9000
   # 存储桶bucket名称
   bucketName: windmill
   # 用户名

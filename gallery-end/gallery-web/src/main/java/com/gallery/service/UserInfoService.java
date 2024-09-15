@@ -51,4 +51,11 @@ public interface UserInfoService extends IService<UserInfo> {
      * @return ResponseResult
      */
     UserInfo getUserInfo(Long id);
+
+    /**
+     * 根据imgKey获取用户信息
+     * @param key 用户上传key
+     * @return UserInfo
+     */
+    UserInfo getUserInfoByUploadKey(String key);
 }
