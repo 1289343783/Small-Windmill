@@ -25,16 +25,12 @@
     </dependencies>
 
     <build>
+        <finalName>gallery-end</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>2.3.7.RELEASE</version>
-                <configuration>
-                    <!-- 指定该Main Class为全局的唯一入口 -->
-                    <mainClass>com.gallery.GalleryWebApplication</mainClass>
-                    <layout>ZIP</layout>
-                </configuration>
                 <executions>
                     <execution>
                         <goals>
@@ -42,6 +38,20 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.2.2</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <warName>${project.artifactId}</warName>
+                </configuration>
             </plugin>
         </plugins>
     </build>

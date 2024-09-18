@@ -4,6 +4,7 @@
       <Icon icon="maki:art-gallery"></Icon>
       <span class="font-bold text-lg ml-1">图库</span>
     </div>
+    <hr>
     <a-divider v-if="galleryList.length <= 0"/>
     <div v-if="galleryList.length > 0">
       <!--    手机端gutter="[5, 2]" :span="8" -->
