@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gallery.common.result.ResponseResult;
+import com.gallery.config.DomainWebConfig;
 import com.gallery.config.MinioConfig;
 import com.gallery.constants.SystemConstants;
 import com.gallery.domain.dto.GalleryQueryDTO;
@@ -21,18 +22,20 @@ import com.gallery.exception.TransactionalException;
 import com.gallery.service.GalleryImagesService;
 import com.gallery.mapper.GalleryImagesMapper;
 import com.gallery.service.UserInfoService;
-import com.gallery.utils.BeanCopyUtils;
-import com.gallery.utils.DateUtils;
-import com.gallery.utils.MinIOUtils;
-import com.gallery.utils.StpUtils;
+import com.gallery.utils.*;
+import io.minio.StatObjectResponse;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
@@ -50,6 +53,9 @@ public class GalleryImagesServiceImpl extends ServiceImpl<GalleryImagesMapper, G
 
     @Resource
     private MinioConfig minIOConfig;
+
+    @Resource
+    private DomainWebConfig domainWebConfig;
 
     @Resource
     private UserInfoService userInfoService;
@@ -80,9 +86,11 @@ public class GalleryImagesServiceImpl extends ServiceImpl<GalleryImagesMapper, G
         MultipartFile file = galleryDto.getFile();
         try {
             // 处理上传文件的逻辑
+            String imgKeyNum = ImgKeyUtils.generateImgKeyNum();
             MinIOUtils.uploadFile(minIOConfig.getBucketName(), fileName, file.getInputStream());
-            String url = minIOConfig.getFileHost() + "/" + minIOConfig.getBucketName() + "/" + fileName;
+            String url = domainWebConfig.getDomainName() + "/" + "file/" + imgKeyNum + "/" + fileName;
             galleryInfo.setUserid(userInfo.getId());
+            galleryInfo.setImgKeyNum(imgKeyNum);
             galleryInfo.setImgUrl(url);
             save(galleryInfo);
             //返回图片链接
@@ -205,6 +213,59 @@ public class GalleryImagesServiceImpl extends ServiceImpl<GalleryImagesMapper, G
             throw new SystemException(AppHttpCodeEnum.RESOURCE_NOT_EXIST);
         }
         return oneGallery;
+    }
+
+    /**
+     * 下载文件
+     *
+     * @param fileName 文件名
+     * @param response HttpServletResponse
+     */
+    @Override
+    public void downloadFile(String imgKeyNum, String fileName, HttpServletResponse response) {
+        verifyDownloadFile(imgKeyNum);
+        // 创建输入流
+        InputStream is = null;
+        try {
+            // 获取对象的元数据
+            StatObjectResponse stat = MinIOUtils.getStatObject(minIOConfig.getBucketName(), fileName);
+            // 响应 设置内容类型
+            response.setContentType(stat.contentType());
+            // 响应 设置编码格式
+            response.setCharacterEncoding("UTF-8");
+            // 响应 设置头文件
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
+            // 输入流
+            is = MinIOUtils.getObject(minIOConfig.getBucketName(), fileName);
+            // 将字节从输入流复制到输出流
+            IOUtils.copy(is, response.getOutputStream());
+        } catch (Exception e) {
+            throw new SystemException(AppHttpCodeEnum.DOWNLOAD_FILE_ERROR);
+        } finally {
+            try {
+                if (is != null) {
+                    is.close();
+                }
+            } catch (IOException e) {
+                throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR);
+            }
+        }
+    }
+
+    /**
+     * 校验数据是否存在
+     *
+     * @param imgKeyNum 名称
+     * @return boolean
+     */
+    public void verifyDownloadFile(String imgKeyNum) {
+        LambdaQueryWrapper<GalleryImages> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(GalleryImages::getImgKeyNum, imgKeyNum);
+        GalleryImages galleryImage = this.getOne(wrapper);
+        Assert.notNull(galleryImage, AppHttpCodeEnum.RESOURCE_NOT_EXIST);
+        if (galleryImage.getIsDelete() == 1) {
+            throw new SystemException(AppHttpCodeEnum.RESOURCE_NOT_EXIST);
+        }
     }
 
     /**

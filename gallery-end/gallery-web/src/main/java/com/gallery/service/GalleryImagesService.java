@@ -8,6 +8,7 @@ import com.gallery.domain.entity.GalleryImages;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -60,4 +61,12 @@ public interface GalleryImagesService extends IService<GalleryImages> {
     ResponseResult deleteGalleryById(Long id);
 
     GalleryImages getOneGallery(Long id);
+
+    /**
+     * 下载文件
+     *
+     * @param fileName 文件名
+     * @param response HttpServletResponse
+     */
+    void downloadFile(String imgKeyNum, String fileName, HttpServletResponse response);
 }

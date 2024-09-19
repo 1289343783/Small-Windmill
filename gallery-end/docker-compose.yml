@@ -87,11 +87,11 @@ services:
     environment:
       - TZ=Asia/Shanghai
     ports:
-      #      - "18080:18080" #资助管理系统nginx端口
-      #      - "18081:18081" #图库资源nginx端口
-      #      - "18083:18083" #爱心网站nginx端口
-      - "80:80"
-      - "443:443"
+      - "18080:18080" #资助管理系统nginx端口
+      - "18081:18081" #图库资源nginx端口
+      - "18083:18083" #爱心网站nginx端口
+      - "80:80" #默认nginx配置SSL端口
+      - "443:443" #默认nginx配置SSL端口
     volumes:
       - "./nginx/nginx.conf:/etc/nginx/nginx.conf"# 配置文件目录
       - "./nginx/html:/usr/share/nginx/html" # 前端页面目录

@@ -9,7 +9,7 @@ interface IImageParam {
     imgDesc: string
 }
 
-const imgKey = "06c00e7dc34f4c3f95308459bc87db14"
+const imgKey = "your ImgKey"
 
 /**
  * 上传图片

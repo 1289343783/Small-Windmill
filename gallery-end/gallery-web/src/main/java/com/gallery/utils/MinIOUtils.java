@@ -223,6 +223,20 @@ public class MinIOUtils {
     }
 
     /**
+     * 获取对象的元数据
+     *
+     * @param bucketName 存储桶
+     * @param objectName 文件名
+     * @return StatObjectResponse
+     * @throws Exception
+     */
+    public static StatObjectResponse getStatObject(String bucketName, String objectName) throws Exception {
+        // 获取对象的元数据
+        return minioClient.statObject(StatObjectArgs.builder().bucket(bucketName).object(objectName).build());
+    }
+
+
+    /**
      * 获取文件流
      *
      * @param bucketName 存储桶

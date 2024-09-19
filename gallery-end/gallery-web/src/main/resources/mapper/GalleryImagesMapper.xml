@@ -15,6 +15,7 @@
         <result property="imgHash" column="img_hash" jdbcType="VARCHAR"/>
         <result property="imgName" column="img_name" jdbcType="VARCHAR"/>
         <result property="imgUrl" column="img_url" jdbcType="VARCHAR"/>
+        <result property="imgKeyNum" column="img_key_num" jdbcType="VARCHAR"/>
         <result property="imgDesc" column="img_desc" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
@@ -28,7 +29,7 @@
         ,userId,img_type,
         img_size,img_width,img_height,
         img_format,img_hash,img_name,
-        img_url,img_desc,create_time,
+        img_url,img_key_num,img_desc,create_time,
         update_time,create_by,update_by,
         is_delete
     </sql>

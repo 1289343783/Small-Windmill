@@ -20,7 +20,7 @@ spring:
     # Redis服务器连接端口
     port: 6379
     # Redis服务器连接密码（默认为空）
-#    password: 123456
+    #    password: 123456
     # 连接超时时间
     timeout: 10s
     lettuce:
@@ -68,7 +68,7 @@ mybatis-plus:
 # MinIO 配置
 minio:
   #ip地址
-  endpoint: http:/127.0.0.1:9000
+  endpoint: http://127.0.0.1:9000
   #ip地址
   fileHost: http://127.0.0.1:9000
   # 存储桶bucket名称
@@ -81,3 +81,7 @@ minio:
   imgSize: 1024
   # 文件大小限制，单位：m
   fileSize: 1024
+
+# 域名url
+domainWeb:
+  domainName: http://127.0.0.1:8081

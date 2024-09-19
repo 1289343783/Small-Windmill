@@ -15,8 +15,8 @@ public enum AppHttpCodeEnum {
     PARAM_NOT_VALID(506, "请求参数非法"),
     DATE_NOT_VALID(507, "日期格式非法"),
     FILE_DO_NULL(500, "上传文件为空，请重新上传"),
-    USER_KEY_ILLEGALITY(506,"Key不合法！"),
-
+    USER_KEY_ILLEGALITY(506, "Key不合法！"),
+    DOWNLOAD_FILE_ERROR(500, "下载文件异常!"),
     BUCKET_NAME_MULL(504, "当前操作的桶不存在！");
 
     private final int code;

@@ -33,7 +33,8 @@ public class SecurityConfig implements WebMvcConfigurer {
                         "/",
                         "/user/login",
                         "/user/register",
-                        "/file/upload"
+//                        "/file/upload",
+                        "/file/**"
                 )
                 // 认证函数: 每次请求执行
                 .setAuth(obj -> {

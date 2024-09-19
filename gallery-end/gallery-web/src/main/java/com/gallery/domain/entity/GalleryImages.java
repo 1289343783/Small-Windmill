@@ -70,6 +70,11 @@ public class GalleryImages implements Serializable {
     private String imgUrl;
 
     /**
+     * 图片key值
+     */
+    private String imgKeyNum;
+
+    /**
      * 图片描述
      */
     private String imgDesc;
