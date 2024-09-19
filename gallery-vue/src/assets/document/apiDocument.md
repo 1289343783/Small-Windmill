@@ -13,7 +13,7 @@ API v1调用可以使用POST请求方法完成，通过POST请求方法完成上
 ## 图片上传
 
 ```javascript
-https://api.imgbb.com/1/upload
+http://windmill.asia/api/file/upload
 ```
 
 ## 参数
